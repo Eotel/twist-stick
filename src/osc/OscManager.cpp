@@ -39,6 +39,18 @@ void OscManager::sendTwistData(const TwistData& data) {
     );
 }
 
+void OscManager::sendQuaternion(const Quaternion& q) {
+    if (!initialized_ || targetIp_.isEmpty()) {
+        return;
+    }
+
+    // Send quaternion as 4 floats [w, x, y, z]
+    // /twist-stick/quaternion [w, x, y, z]
+    OscWiFi.send(targetIp_, sendPort_, OSC_QUATERNION_ADDRESS,
+        q.w, q.x, q.y, q.z
+    );
+}
+
 void OscManager::update() {
     if (!initialized_) {
         return;

@@ -12,6 +12,7 @@ constexpr float MAHONY_KI = 0.0f;  // Integral gain (set to 0 for 6DoF)
 constexpr uint16_t OSC_SEND_PORT = 9000;
 constexpr uint16_t OSC_RECV_PORT = 9001;
 constexpr const char* OSC_ADDRESS = "/twist-stick";
+constexpr const char* OSC_QUATERNION_ADDRESS = "/twist-stick/quaternion";
 constexpr const char* OSC_RESET_ADDRESS = "/twist-stick/reset";
 
 // WiFi settings
@@ -24,3 +25,6 @@ constexpr const char* CONFIG_FILE = "/config.json";
 
 // Display update rate
 constexpr uint32_t DISPLAY_UPDATE_INTERVAL_MS = 100;
+
+// Display power saving
+constexpr uint32_t DISPLAY_TIMEOUT_MS = 10000;  // 10 seconds

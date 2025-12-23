@@ -4,6 +4,7 @@
 #include <ArduinoOSCWiFi.h>
 #include <functional>
 #include "../twist/TwistCalculator.h"
+#include "../imu/ImuReader.h"
 
 class OscManager {
 public:
@@ -15,6 +16,7 @@ public:
     void setTarget(const String& targetIp, uint16_t sendPort);
 
     void sendTwistData(const TwistData& data);
+    void sendQuaternion(const Quaternion& q);
     void update();  // Process incoming messages
 
     void setResetCallback(ResetCallback callback);

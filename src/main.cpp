@@ -144,6 +144,9 @@ void setup() {
     // Initialize twist calculator
     twistCalculator.reset();
 
+    // Ensure display is awake and ready
+    display.wake();
+
     Serial.println("Setup complete!");
 }
 
@@ -162,13 +165,18 @@ void loop() {
         return;
     }
 
+    // Wake display on any button press
+    if (M5.BtnA.wasPressed() || M5.BtnB.wasPressed()) {
+        display.wake();
+    }
+
     // Button A: Reset twist angles
     if (M5.BtnA.wasPressed()) {
         resetTwist();
     }
 
-    // Button B (if available): Enter config mode
-    if (M5.BtnB.wasPressed()) {
+    // Button B (if available): Enter config mode (long press)
+    if (M5.BtnB.pressedFor(2000)) {
         enterConfigMode();
         return;
     }
@@ -186,6 +194,7 @@ void loop() {
             // Send via OSC
             if (wifiManager.isConnected()) {
                 oscManager.sendTwistData(twist);
+                oscManager.sendQuaternion(q);
             }
 
             // Update display
