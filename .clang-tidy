@@ -14,6 +14,22 @@ Checks: >
   -readability-magic-numbers,
   -readability-function-cognitive-complexity,
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  -readability-uppercase-literal-suffix,
+  -modernize-avoid-c-arrays,
+  -modernize-use-nodiscard,
+  -readability-convert-member-functions-to-static,
+  -readability-math-missing-parentheses,
+  -modernize-use-default-member-init,
+  -readability-make-member-function-const,
+  -performance-enum-size,
+  -readability-redundant-member-init,
+  -modernize-use-auto,
+  -modernize-raw-string-literal,
+  -modernize-return-braced-init-list,
+  -readability-isolate-declaration,
+  -readability-braces-around-statements,
+  -readability-static-accessed-through-instance,
+  -modernize-use-equals-default,
 
 # ESP32/Arduino specific exclusions
 # - Many Arduino patterns use short identifiers (e.g., `i`, `n`)

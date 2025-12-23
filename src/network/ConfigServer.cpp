@@ -1,10 +1,8 @@
 #include "ConfigServer.h"
+
 #include <WiFi.h>
 
-ConfigServer::ConfigServer()
-    : server_(80)
-    , running_(false) {
-}
+ConfigServer::ConfigServer() : server_(80), running_(false) {}
 
 void ConfigServer::begin() {
     // Setup DNS for captive portal
@@ -27,7 +25,8 @@ void ConfigServer::stop() {
 }
 
 void ConfigServer::handleClient() {
-    if (!running_) return;
+    if (!running_)
+        return;
     dnsServer_.processNextRequest();
     server_.handleClient();
 }
@@ -66,13 +65,13 @@ void ConfigServer::handleSave() {
     }
 
     server_.send(200, "text/html",
-        "<!DOCTYPE html><html><head><meta charset='UTF-8'>"
-        "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-        "<title>Saved</title></head><body style='font-family:sans-serif;text-align:center;padding:20px'>"
-        "<h2>Settings Saved!</h2><p>Device will restart...</p>"
-        "<script>setTimeout(()=>location='/',5000)</script>"
-        "</body></html>"
-    );
+                 "<!DOCTYPE html><html><head><meta charset='UTF-8'>"
+                 "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+                 "<title>Saved</title></head><body "
+                 "style='font-family:sans-serif;text-align:center;padding:20px'>"
+                 "<h2>Settings Saved!</h2><p>Device will restart...</p>"
+                 "<script>setTimeout(()=>location='/',5000)</script>"
+                 "</body></html>");
 }
 
 void ConfigServer::handleStatus() {

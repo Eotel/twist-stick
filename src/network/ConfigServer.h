@@ -1,9 +1,11 @@
 #pragma once
 
 #include <Arduino.h>
-#include <WebServer.h>
+
 #include <DNSServer.h>
+#include <WebServer.h>
 #include <functional>
+
 #include "../storage/ConfigStorage.h"
 
 class ConfigServer {

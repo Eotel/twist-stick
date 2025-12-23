@@ -1,6 +1,7 @@
 #pragma once
 
 #include <M5Unified.h>
+
 #include "MahonyAHRS.h"
 
 struct ImuData {

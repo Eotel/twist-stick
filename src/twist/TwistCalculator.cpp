@@ -1,9 +1,8 @@
 #include "TwistCalculator.h"
+
 #include <cmath>
 
-TwistCalculator::TwistCalculator()
-    : hasPrev_(false)
-    , prev_() {
+TwistCalculator::TwistCalculator() : hasPrev_(false), prev_() {
     cumulativeTheta_[0] = cumulativeTheta_[1] = cumulativeTheta_[2] = 0.0f;
 }
 
@@ -81,12 +80,10 @@ Quaternion TwistCalculator::inverse(const Quaternion& q) {
 }
 
 Quaternion TwistCalculator::multiply(const Quaternion& a, const Quaternion& b) {
-    return Quaternion(
-        a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
-        a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
-        a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
-        a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w
-    );
+    return Quaternion(a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+                      a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+                      a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+                      a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w);
 }
 
 float TwistCalculator::dot(const Quaternion& a, const Quaternion& b) {
@@ -99,10 +96,17 @@ float TwistCalculator::extractTwistAngle(const Quaternion& dq, int axis) {
 
     float s;
     switch (axis) {
-        case 0: s = dq.x; break;  // X axis (1, 0, 0)
-        case 1: s = dq.y; break;  // Y axis (0, 1, 0)
-        case 2: s = dq.z; break;  // Z axis (0, 0, 1)
-        default: s = 0.0f;
+    case 0:
+        s = dq.x;
+        break;  // X axis (1, 0, 0)
+    case 1:
+        s = dq.y;
+        break;  // Y axis (0, 1, 0)
+    case 2:
+        s = dq.z;
+        break;  // Z axis (0, 0, 1)
+    default:
+        s = 0.0f;
     }
 
     return 2.0f * std::atan2(s, dq.w);

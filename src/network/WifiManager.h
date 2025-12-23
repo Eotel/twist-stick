@@ -5,11 +5,7 @@
 
 class WifiManager {
 public:
-    enum class Mode {
-        DISCONNECTED,
-        STA,
-        AP
-    };
+    enum class Mode { DISCONNECTED, STA, AP };
 
     WifiManager();
 

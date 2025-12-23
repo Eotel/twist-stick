@@ -1,4 +1,5 @@
 #include "ConfigStorage.h"
+
 #include "../config.h"
 
 AppConfig::AppConfig() {

@@ -2,9 +2,11 @@
 
 #include <Arduino.h>
 #include <ArduinoOSCWiFi.h>
+
 #include <functional>
-#include "../twist/TwistCalculator.h"
+
 #include "../imu/ImuReader.h"
+#include "../twist/TwistCalculator.h"
 
 class OscManager {
 public:

@@ -1,12 +1,13 @@
 #include <M5Unified.h>
+
 #include "config.h"
-#include "imu/ImuReader.h"
-#include "twist/TwistCalculator.h"
-#include "osc/OscManager.h"
-#include "network/WifiManager.h"
-#include "network/ConfigServer.h"
-#include "storage/ConfigStorage.h"
 #include "display/DisplayManager.h"
+#include "imu/ImuReader.h"
+#include "network/ConfigServer.h"
+#include "network/WifiManager.h"
+#include "osc/OscManager.h"
+#include "storage/ConfigStorage.h"
+#include "twist/TwistCalculator.h"
 
 // Global objects
 ImuReader imuReader;
@@ -29,7 +30,9 @@ void resetTwist() {
 }
 
 void saveGyroCalibration() {
-    float ox, oy, oz;
+    float ox = 0.0f;
+    float oy = 0.0f;
+    float oz = 0.0f;
     imuReader.getGyroOffset(ox, oy, oz);
     configStorage.saveGyroCalibration(ox, oy, oz);
     appConfig.gyroOffsetX = ox;
@@ -40,7 +43,9 @@ void saveGyroCalibration() {
 }
 
 void startCalibration() {
-    if (calibrationMode) return;
+    if (calibrationMode) {
+        return;
+    }
 
     calibrationMode = true;
     imuReader.startRecalibration();
@@ -90,7 +95,9 @@ void setup() {
     if (!configStorage.begin()) {
         Serial.println("Failed to init NVS");
         display.showError("NVS Error");
-        while (1) delay(1000);
+        while (true) {
+            delay(1000);
+        }
     }
     configStorage.load(appConfig);
 
@@ -98,16 +105,15 @@ void setup() {
     if (!imuReader.begin()) {
         Serial.println("Failed to init IMU");
         display.showError("IMU Error");
-        while (1) delay(1000);
+        while (true) {
+            delay(1000);
+        }
     }
 
     // Load gyro calibration if available
     if (appConfig.gyroCalibrated) {
-        imuReader.setGyroOffset(
-            appConfig.gyroOffsetX,
-            appConfig.gyroOffsetY,
-            appConfig.gyroOffsetZ
-        );
+        imuReader.setGyroOffset(appConfig.gyroOffsetX, appConfig.gyroOffsetY,
+                                appConfig.gyroOffsetZ);
         Serial.println("Gyro calibration loaded");
     }
 

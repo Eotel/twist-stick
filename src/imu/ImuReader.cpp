@@ -1,11 +1,9 @@
 #include "ImuReader.h"
+
 #include "../config.h"
 
 ImuReader::ImuReader()
-    : ahrs_(MAHONY_KP, MAHONY_KI)
-    , lastUpdateTime_(0)
-    , calibrated_(false)
-    , calibrationCount_(0) {
+    : ahrs_(MAHONY_KP, MAHONY_KI), lastUpdateTime_(0), calibrated_(false), calibrationCount_(0) {
     gyroOffset_[0] = gyroOffset_[1] = gyroOffset_[2] = 0.0f;
     calibrationSum_[0] = calibrationSum_[1] = calibrationSum_[2] = 0.0f;
 }
@@ -30,17 +28,20 @@ bool ImuReader::update() {
     M5.Imu.getAccel(&data_.accel[0], &data_.accel[1], &data_.accel[2]);
 
     // Read gyroscope (in deg/s, convert to rad/s)
-    float gx, gy, gz;
+    float gx = 0.0f;
+    float gy = 0.0f;
+    float gz = 0.0f;
     M5.Imu.getGyro(&gx, &gy, &gz);
 
-    // DEG_TO_RAD is already defined in Arduino.h
-    data_.gyro[0] = (gx - gyroOffset_[0]) * DEG_TO_RAD;
-    data_.gyro[1] = (gy - gyroOffset_[1]) * DEG_TO_RAD;
-    data_.gyro[2] = (gz - gyroOffset_[2]) * DEG_TO_RAD;
+    // DEG_TO_RAD is already defined in Arduino.h (as double)
+    constexpr float DEG_TO_RAD_F = static_cast<float>(DEG_TO_RAD);
+    data_.gyro[0] = (gx - gyroOffset_[0]) * DEG_TO_RAD_F;
+    data_.gyro[1] = (gy - gyroOffset_[1]) * DEG_TO_RAD_F;
+    data_.gyro[2] = (gz - gyroOffset_[2]) * DEG_TO_RAD_F;
 
     // Calculate delta time
     uint32_t now = micros();
-    float dt = (now - lastUpdateTime_) * 1e-6f;
+    float dt = static_cast<float>(now - lastUpdateTime_) * 1e-6f;
     lastUpdateTime_ = now;
 
     // Clamp dt to reasonable range
@@ -51,11 +52,8 @@ bool ImuReader::update() {
     data_.timestamp = now;
 
     // Update AHRS
-    ahrs_.update(
-        data_.accel[0], data_.accel[1], data_.accel[2],
-        data_.gyro[0], data_.gyro[1], data_.gyro[2],
-        dt
-    );
+    ahrs_.update(data_.accel[0], data_.accel[1], data_.accel[2], data_.gyro[0], data_.gyro[1],
+                 data_.gyro[2], dt);
 
     return true;
 }
@@ -89,7 +87,9 @@ bool ImuReader::calibrateGyro() {
     }
 
     // Read raw gyro data
-    float gx, gy, gz;
+    float gx = 0.0f;
+    float gy = 0.0f;
+    float gz = 0.0f;
     M5.Imu.getGyro(&gx, &gy, &gz);
 
     calibrationSum_[0] += gx;

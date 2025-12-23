@@ -1,18 +1,12 @@
 #pragma once
 
 #include <M5Unified.h>
+
 #include "../twist/TwistCalculator.h"
 
 class DisplayManager {
 public:
-    enum class Screen {
-        BOOT,
-        CALIBRATING,
-        CONNECTING,
-        CONFIG_MODE,
-        RUNNING,
-        ERROR
-    };
+    enum class Screen { BOOT, CALIBRATING, CONNECTING, CONFIG_MODE, RUNNING, ERROR };
 
     DisplayManager();
 

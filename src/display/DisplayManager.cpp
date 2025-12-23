@@ -1,13 +1,10 @@
 #include "DisplayManager.h"
+
 #include "../config.h"
 
 DisplayManager::DisplayManager()
-    : screen_(Screen::BOOT)
-    , lastUpdate_(0)
-    , lastActivity_(0)
-    , needsRedraw_(true)
-    , sleeping_(false) {
-}
+    : screen_(Screen::BOOT), lastUpdate_(0), lastActivity_(0), needsRedraw_(true),
+      sleeping_(false) {}
 
 void DisplayManager::begin() {
     M5.Display.setRotation(1);  // Landscape mode for M5StickC Plus
@@ -82,8 +79,8 @@ void DisplayManager::showCalibrating(int progress) {
     int barHeight = 10;
 
     M5.Display.drawRect(barX, barY, barWidth, barHeight, TFT_WHITE);
-    M5.Display.fillRect(barX + 1, barY + 1,
-        (barWidth - 2) * progress / 100, barHeight - 2, TFT_GREEN);
+    M5.Display.fillRect(barX + 1, barY + 1, (barWidth - 2) * progress / 100, barHeight - 2,
+                        TFT_GREEN);
 }
 
 void DisplayManager::showConnecting(const String& ssid) {

@@ -1,10 +1,8 @@
 #include "WifiManager.h"
+
 #include "../config.h"
 
-WifiManager::WifiManager()
-    : mode_(Mode::DISCONNECTED)
-    , apSsid_(AP_SSID) {
-}
+WifiManager::WifiManager() : mode_(Mode::DISCONNECTED), apSsid_(AP_SSID) {}
 
 bool WifiManager::begin(const String& ssid, const String& password) {
     if (ssid.isEmpty()) {
