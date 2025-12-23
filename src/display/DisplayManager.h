@@ -29,11 +29,20 @@ public:
     void showRunning(const String& ip, const TwistData& data);
     void showError(const String& message);
 
+    // Power saving
+    void wake();
+    void sleep();
+    bool isSleeping() const { return sleeping_; }
+    void resetTimeout();
+
 private:
     Screen screen_;
     uint32_t lastUpdate_;
+    uint32_t lastActivity_;
     bool needsRedraw_;
+    bool sleeping_;
 
     void clear();
     void drawHeader(const char* title);
+    void checkTimeout();
 };

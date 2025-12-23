@@ -4,13 +4,18 @@
 DisplayManager::DisplayManager()
     : screen_(Screen::BOOT)
     , lastUpdate_(0)
-    , needsRedraw_(true) {
+    , lastActivity_(0)
+    , needsRedraw_(true)
+    , sleeping_(false) {
 }
 
 void DisplayManager::begin() {
     M5.Display.setRotation(1);  // Landscape mode for M5StickC Plus
     M5.Display.setTextSize(1);
     M5.Display.fillScreen(TFT_BLACK);
+    M5.Display.setBrightness(80);
+    lastActivity_ = millis();
+    sleeping_ = false;
 }
 
 void DisplayManager::update() {
@@ -20,6 +25,11 @@ void DisplayManager::update() {
     }
     lastUpdate_ = now;
     needsRedraw_ = false;
+
+    // Check for timeout (only in RUNNING screen)
+    if (screen_ == Screen::RUNNING) {
+        checkTimeout();
+    }
 }
 
 void DisplayManager::setScreen(Screen screen) {
@@ -117,6 +127,11 @@ void DisplayManager::showRunning(const String& ip, const TwistData& data) {
         drawHeader("Running");
     }
 
+    // Skip drawing if sleeping to save power
+    if (sleeping_) {
+        return;
+    }
+
     M5.Display.setTextColor(TFT_WHITE, TFT_BLACK);
     M5.Display.setTextSize(1);
 
@@ -146,4 +161,39 @@ void DisplayManager::showError(const String& message) {
     M5.Display.setTextSize(1);
     M5.Display.setCursor(5, 40);
     M5.Display.print(message);
+}
+
+void DisplayManager::wake() {
+    if (sleeping_) {
+        sleeping_ = false;
+        M5.Display.wakeup();
+        M5.Display.waitDisplay();
+        M5.Display.setBrightness(80);
+        // Force full redraw
+        clear();
+        if (screen_ == Screen::RUNNING) {
+            drawHeader("Running");
+        }
+        needsRedraw_ = true;
+    }
+    lastActivity_ = millis();
+}
+
+void DisplayManager::sleep() {
+    if (!sleeping_) {
+        sleeping_ = true;
+        M5.Display.sleep();
+        M5.Display.setBrightness(0);
+        M5.Display.waitDisplay();
+    }
+}
+
+void DisplayManager::resetTimeout() {
+    lastActivity_ = millis();
+}
+
+void DisplayManager::checkTimeout() {
+    if (!sleeping_ && (millis() - lastActivity_ >= DISPLAY_TIMEOUT_MS)) {
+        sleep();
+    }
 }
