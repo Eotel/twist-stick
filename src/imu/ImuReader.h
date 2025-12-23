@@ -27,12 +27,16 @@ public:
     Quaternion getQuaternion() const;
 
     void setGyroOffset(float ox, float oy, float oz);
+    void getGyroOffset(float& ox, float& oy, float& oz) const;
     void resetAHRS();
 
     // Auto-calibration: call repeatedly while device is stationary
     // Returns true when calibration is complete
     bool calibrateGyro();
     bool isCalibrated() const { return calibrated_; }
+
+    // Start recalibration (resets calibrated state)
+    void startRecalibration();
 
 private:
     ImuData data_;

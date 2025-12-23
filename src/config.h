@@ -14,6 +14,8 @@ constexpr uint16_t OSC_RECV_PORT = 9001;
 constexpr const char* OSC_ADDRESS = "/twist-stick";
 constexpr const char* OSC_QUATERNION_ADDRESS = "/twist-stick/quaternion";
 constexpr const char* OSC_RESET_ADDRESS = "/twist-stick/reset";
+constexpr const char* OSC_CALIBRATE_ADDRESS = "/twist-stick/calibrate";
+constexpr const char* OSC_STATUS_ADDRESS = "/twist-stick/status";
 
 // WiFi settings
 constexpr const char* AP_SSID = "TwistStick-Config";

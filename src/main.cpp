@@ -20,11 +20,38 @@ AppConfig appConfig;
 
 // State
 bool configMode = false;
+bool calibrationMode = false;
 uint32_t lastImuUpdate = 0;
 
 void resetTwist() {
     twistCalculator.reset();
     Serial.println("Twist reset!");
+}
+
+void saveGyroCalibration() {
+    float ox, oy, oz;
+    imuReader.getGyroOffset(ox, oy, oz);
+    configStorage.saveGyroCalibration(ox, oy, oz);
+    appConfig.gyroOffsetX = ox;
+    appConfig.gyroOffsetY = oy;
+    appConfig.gyroOffsetZ = oz;
+    appConfig.gyroCalibrated = true;
+    Serial.println("Gyro calibration saved to NVS");
+}
+
+void startCalibration() {
+    if (calibrationMode) return;
+
+    calibrationMode = true;
+    imuReader.startRecalibration();
+    twistCalculator.reset();
+    display.wake();
+    display.showCalibrating(0);
+
+    if (wifiManager.isConnected()) {
+        oscManager.sendStatus("calibrating");
+    }
+    Serial.println("Calibration started");
 }
 
 void onConfigSaved(const AppConfig& newConfig) {
@@ -125,6 +152,7 @@ void setup() {
             // Initialize OSC
             oscManager.begin(appConfig.oscTargetIp, appConfig.oscSendPort, appConfig.oscRecvPort);
             oscManager.setResetCallback(resetTwist);
+            oscManager.setCalibrateCallback(startCalibration);
 
             Serial.print("OSC target: ");
             Serial.print(appConfig.oscTargetIp);
@@ -170,15 +198,43 @@ void loop() {
         display.wake();
     }
 
+    // Handle calibration mode
+    if (calibrationMode) {
+        M5.Imu.update();
+        if (imuReader.calibrateGyro()) {
+            calibrationMode = false;
+            saveGyroCalibration();
+            imuReader.resetAHRS();
+            twistCalculator.reset();
+
+            if (wifiManager.isConnected()) {
+                oscManager.sendStatus("calibrated");
+            }
+            Serial.println("Calibration complete");
+        } else {
+            display.showCalibrating(imuReader.isCalibrated() ? 100 : 50);
+        }
+        delay(10);
+        return;
+    }
+
     // Button A: Reset twist angles
     if (M5.BtnA.wasPressed()) {
         resetTwist();
     }
 
-    // Button B (if available): Enter config mode (long press)
-    if (M5.BtnB.pressedFor(2000)) {
+    // Button B: Long press (2s) = config mode, short press = calibration
+    static bool btnBLongPressTriggered = false;
+    if (M5.BtnB.pressedFor(2000) && !btnBLongPressTriggered) {
+        btnBLongPressTriggered = true;
         enterConfigMode();
         return;
+    }
+    if (M5.BtnB.wasReleased()) {
+        if (!btnBLongPressTriggered) {
+            startCalibration();
+        }
+        btnBLongPressTriggered = false;
     }
 
     // Update IMU at target rate

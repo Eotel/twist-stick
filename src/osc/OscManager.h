@@ -9,6 +9,7 @@
 class OscManager {
 public:
     using ResetCallback = std::function<void()>;
+    using CalibrateCallback = std::function<void()>;
 
     OscManager();
 
@@ -17,16 +18,20 @@ public:
 
     void sendTwistData(const TwistData& data);
     void sendQuaternion(const Quaternion& q);
+    void sendStatus(const char* status);
     void update();  // Process incoming messages
 
     void setResetCallback(ResetCallback callback);
+    void setCalibrateCallback(CalibrateCallback callback);
 
 private:
     String targetIp_;
     uint16_t sendPort_;
     uint16_t recvPort_;
     ResetCallback resetCallback_;
+    CalibrateCallback calibrateCallback_;
     bool initialized_;
 
     void onReset();
+    void onCalibrate();
 };

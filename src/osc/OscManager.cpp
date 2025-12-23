@@ -17,6 +17,11 @@ void OscManager::begin(const String& targetIp, uint16_t sendPort, uint16_t recvP
         [this]() { onReset(); }
     );
 
+    // Setup OSC receiver for calibrate command
+    OscWiFi.subscribe(recvPort_, OSC_CALIBRATE_ADDRESS,
+        [this]() { onCalibrate(); }
+    );
+
     initialized_ = true;
 }
 
@@ -51,6 +56,16 @@ void OscManager::sendQuaternion(const Quaternion& q) {
     );
 }
 
+void OscManager::sendStatus(const char* status) {
+    if (!initialized_ || targetIp_.isEmpty()) {
+        return;
+    }
+
+    // Send status string
+    // /twist-stick/status [status]
+    OscWiFi.send(targetIp_, sendPort_, OSC_STATUS_ADDRESS, status);
+}
+
 void OscManager::update() {
     if (!initialized_) {
         return;
@@ -62,8 +77,18 @@ void OscManager::setResetCallback(ResetCallback callback) {
     resetCallback_ = callback;
 }
 
+void OscManager::setCalibrateCallback(CalibrateCallback callback) {
+    calibrateCallback_ = callback;
+}
+
 void OscManager::onReset() {
     if (resetCallback_) {
         resetCallback_();
+    }
+}
+
+void OscManager::onCalibrate() {
+    if (calibrateCallback_) {
+        calibrateCallback_();
     }
 }

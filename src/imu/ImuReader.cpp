@@ -73,6 +73,12 @@ void ImuReader::setGyroOffset(float ox, float oy, float oz) {
     calibrated_ = true;
 }
 
+void ImuReader::getGyroOffset(float& ox, float& oy, float& oz) const {
+    ox = gyroOffset_[0];
+    oy = gyroOffset_[1];
+    oz = gyroOffset_[2];
+}
+
 void ImuReader::resetAHRS() {
     ahrs_.reset();
 }
@@ -105,4 +111,11 @@ bool ImuReader::calibrateGyro() {
     }
 
     return false;
+}
+
+void ImuReader::startRecalibration() {
+    calibrated_ = false;
+    calibrationCount_ = 0;
+    calibrationSum_[0] = calibrationSum_[1] = calibrationSum_[2] = 0.0f;
+    gyroOffset_[0] = gyroOffset_[1] = gyroOffset_[2] = 0.0f;
 }
