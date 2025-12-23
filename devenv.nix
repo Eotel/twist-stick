@@ -7,6 +7,12 @@
     python3Packages.pyserial
     esptool
     git
+
+    # C++ tooling
+    clang-tools  # clangd, clang-format, clang-tidy
+
+    # Task runner
+    just
   ];
 
   env = {
@@ -20,10 +26,6 @@
     echo "twist-stick Development Environment"
     echo "PlatformIO: $(pio --version)"
     echo ""
-    echo "Commands:"
-    echo "  pio run              - Build"
-    echo "  pio run -t upload    - Upload firmware"
-    echo "  pio run -t uploadfs  - Upload SPIFFS data"
-    echo "  pio device monitor   - Serial monitor"
+    echo "Run 'just' to see available commands"
   '';
 }

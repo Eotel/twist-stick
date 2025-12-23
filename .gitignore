@@ -3,6 +3,11 @@
 .pioenvs
 .piolibdeps
 .platformio
+platformio_local.ini
+
+# clangd
+compile_commands.json
+.cache/
 
 # IDE
 .vscode/.browse.c_cpp.db*
